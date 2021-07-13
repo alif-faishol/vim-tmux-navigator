@@ -61,8 +61,15 @@ endfunction
 
 function! s:TmuxCommand(args)
   let cmd = s:TmuxOrTmateExecutable() . ' -S ' . s:TmuxSocket() . ' ' . a:args
+
+  if has("win32")
+    let cmd='bash -c "' . substitute(cmd, '"', '\"', "") . '"'
+  endif
+
   let l:x=&shellcmdflag
-  let &shellcmdflag='-c'
+  if !has("win32")
+    let &shellcmdflag='-c'
+  endif
   let retval=system(cmd)
   let &shellcmdflag=l:x
   return retval
